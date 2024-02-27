@@ -1,0 +1,103 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(Mainscreen());
+}
+
+class Mainscreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: NewsletterScreen(),
+    );
+  }
+}
+
+class NewsletterScreen extends StatefulWidget {
+  const NewsletterScreen({Key? key}) : super(key: key);
+
+  @override
+  State<NewsletterScreen> createState() => _NewsletterScreenState();
+}
+
+class _NewsletterScreenState extends State<NewsletterScreen> {
+  bool _subscribeToNewsletter = false;
+  
+  final _formKey = GlobalKey<FormState>(); // Correction de la casse de GlobalKey
+  TextEditingController emailInput = TextEditingController();
+  TextEditingController passwordInput = TextEditingController(); // Ajout du contrôleur pour le champ du mot de passe
+  
+  void onSubmit(){
+    print("Email: ${emailInput.text}"); // Récupération de la valeur du champ de l'email
+    print("Password: ${passwordInput.text}"); // Récupération de la valeur du champ du mot de passe
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Newsletter"),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey, // Utilisation de _formKey
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Enter your email'),
+                controller: emailInput,
+                validator: (value) {
+                  if (value == null || value.isEmpty){
+                    return "this field is required";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20.0),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Enter your password'),
+                controller: passwordInput, // Utilisation du contrôleur pour le champ du mot de passe
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty){
+                    return "this field is required";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20.0),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _subscribeToNewsletter,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _subscribeToNewsletter = value ?? false;
+                      });
+                    },
+                  ),
+                  Text('Subscribe to newsletter'),
+                ],
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  // Add your submit logic here
+                  bool isOK = _formKey.currentState?.validate() ?? false; // Utilisation de ?? false pour fournir une valeur par défaut
+                  
+                  if(isOK){
+                     onSubmit();
+                  } else {
+                    print("Take your time, be attentive"); // Correction de la syntaxe de l'impression
+                  }
+                },
+                child: Text('Subscribe'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
